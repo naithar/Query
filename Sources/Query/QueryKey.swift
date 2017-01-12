@@ -14,8 +14,6 @@
  * limitations under the License.
  **/
 
-import SwiftyJSON
-
 // MARK: QueryKey
 
 /// Enum type that descripbes subscript keys
@@ -33,7 +31,7 @@ public enum QueryKey {
 /// Protocol for implementing query key for types used in subscripting
 ///
 ///
-public protocol QueryKeyProtocol: JSONSubscriptType {
+public protocol QueryKeyProtocol {
     
     /// 'QueryKey' value
     var queryKey: QueryKey { get }
