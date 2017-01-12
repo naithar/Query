@@ -22,10 +22,10 @@ extension Query {
     /// Initialize a new Query instance by parsing URL query string.
     ///
     /// - Parameter query: URL query string to be parsed.
-    public init(fromText query: String?) {
+    public init(percentEncodedQuery query: String?) {
         guard let query = query else {
-                self.init()
-                return
+            self.init()
+            return
         }
         
         let dictionary = Query.parse(query: query)
@@ -47,14 +47,20 @@ extension Query {
                     continue
             }
             
-            guard let value = keyValue.substring(from: range.upperBound)
+            let valuesString = keyValue
+                .substring(from: range.upperBound)
                 .replacingOccurrences(of: "+", with: " ")
-                .removingPercentEncoding,
-                !value.isEmpty else {
-                    continue
-            }
             
-            parse(into: &root, key: key, value: value)
+            let values = valuesString.components(separatedBy: ",")
+            
+            for value in values {
+                guard let value = value.removingPercentEncoding,
+                    !value.isEmpty else {
+                        continue
+                }
+                
+                self.parse(into: &root, key: key, value: value)
+            }
         }
         
         return root
@@ -79,9 +85,14 @@ extension Query {
                 self.parse(into: &dictionary, key: nextKey, value: value)
                 root[rootKey] = dictionary
             case var array as [Any]:
-                var dictionary = [String : Any]()
-                self.parse(into: &dictionary, key: nextKey, value: value)
-                array.append(dictionary)
+                if var dictionary = array.last as? [String : Any] {
+                    self.parse(into: &dictionary, key: nextKey, value: value)
+                    array[array.count - 1] = dictionary
+                } else {
+                    var dictionary = [String : Any]()
+                    self.parse(into: &dictionary, key: nextKey, value: value)
+                    array.append(dictionary)
+                }
                 root[rootKey] = array
             case let current?:
                 var array = [current]
