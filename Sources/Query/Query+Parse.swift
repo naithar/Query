@@ -15,7 +15,9 @@
  **/
 
 import Foundation
+import Wrap
 
+typealias Query = Wrap.Value
 // MARK: Query parsing.
 extension Query {
     
@@ -24,7 +26,7 @@ extension Query {
     /// - Parameter query: URL query string to be parsed.
     public init(percentEncodedQuery query: String?) {
         guard let query = query else {
-            self.init()
+            self.init(NSNull())
             return
         }
         
