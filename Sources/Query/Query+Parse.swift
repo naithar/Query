@@ -17,7 +17,7 @@
 import Foundation
 @_exported import Wrap
 
-typealias Query = Wrap.Value
+public typealias Query = Wrap.Value
 // MARK: Query parsing.
 extension Query {
     
