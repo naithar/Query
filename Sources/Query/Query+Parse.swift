@@ -15,7 +15,7 @@
  **/
 
 import Foundation
-import Wrap
+@_exported import Wrap
 
 typealias Query = Wrap.Value
 // MARK: Query parsing.
